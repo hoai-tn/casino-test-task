@@ -32,12 +32,15 @@ const games = computed(() => {
   });
 });
 
+const isNewCategory = (game) => {
+  return game.categories.includes("new");
+};
+
 const fetchJackpotsFewSeconds = () => {
   // Check if 'props.gameTab' is 'jackpots'
   if (props.gameTab === "jackpots") {
     // Set a timeout to fetch jackpots feed after 3 seconds
     timeoutJackpot = setTimeout(() => {
-      console.log("fetch");
       store.fetchJackpotsFeed();
     }, 3000);
   } else {
@@ -46,7 +49,18 @@ const fetchJackpotsFewSeconds = () => {
   }
 };
 const getJackpotByGame = (game) => {
-  return store.jackpots.find((jackpot) => jackpot.game === game)?.amount || 0;
+  const amount = store.jackpots.find(
+    (jackpot) => jackpot.game === game
+  )?.amount;
+  if (amount) return amount ? amount : 0;
+};
+const formatPounds = (value) => {
+  let pounds = Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency: "GBP",
+    maximumSignificantDigits: 3,
+  });
+  return pounds.format(value);
 };
 </script>
 
@@ -56,11 +70,14 @@ const getJackpotByGame = (game) => {
   >
     <div v-for="game in games" :key="game.id">
       <div class="relative game cursor-pointer">
+        <div v-show="isNewCategory(game)" class="ribbon-wrapper-green">
+          <div class="ribbon-green">NEWS</div>
+        </div>
         <p
-          v-show="props.gameTab === 'jackpots'"
-          class="absolute right-0 bg-white m-[9px] p-[7px] text-red-600 font-bold"
+          v-show="getJackpotByGame(game.id) > 0"
+          class="absolute w-full right-0 bg-[rgba(0,0,0,0.25)] p-[7px] text-white text-xl font-bold rounded-t-2xl text-center"
         >
-          jackpot: {{ getJackpotByGame(game.id) }}
+          {{ formatPounds(getJackpotByGame(game.id)) }}
         </p>
         <img
           :src="game.image"
@@ -87,5 +104,60 @@ const getJackpotByGame = (game) => {
 }
 .game:hover .info-play {
   display: block;
+}
+.ribbon-wrapper-green {
+  width: 85px;
+  height: 88px;
+  overflow: hidden;
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  z-index: 100;
+}
+
+.ribbon-green {
+  font: bold 15px Sans-Serif;
+  color: white;
+  text-align: center;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px 0px;
+  -webkit-transform: rotate(45deg);
+  position: relative;
+  padding: 7px 0;
+  left: -5px;
+  top: 15px;
+  width: 120px;
+  background-color: #8dc63f;
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(#bfdc7a),
+    to(#8ebf45)
+  );
+  background-image: -webkit-linear-gradient(top, #bfdc7a, #8ebf45);
+  background-image: -moz-linear-gradient(top, #bfdc7a, #8ebf45);
+  background-image: -ms-linear-gradient(top, #bfdc7a, #8ebf45);
+  background-image: -o-linear-gradient(top, #bfdc7a, #8ebf45);
+  color: white;
+  -webkit-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+}
+
+.ribbon-green:before,
+.ribbon-green:after {
+  content: "";
+  border-top: 3px solid #6e8900;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  position: absolute;
+  bottom: -3px;
+}
+
+.ribbon-green:before {
+  left: 0;
+}
+.ribbon-green:after {
+  right: 0;
 }
 </style>
