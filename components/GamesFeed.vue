@@ -46,7 +46,7 @@ const getJackpotByGame = (game) => {
   const amount = store.jackpots.find(
     (jackpot) => jackpot.game === game
   )?.amount;
-  if (amount) return amount ? amount : 0;
+  return amount || 0;
 };
 const formatPounds = (value) => {
   let pounds = Intl.NumberFormat("en-GB", {
