@@ -82,8 +82,7 @@ const formatPounds = (value) => {
         <img
           :src="game.image"
           alt="game-name"
-          class="rounded-2xl mx-auto"
-          width="370"
+          class="rounded-2xl w-full mx-auto"
         />
         <div
           class="info-play absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center hidden"
