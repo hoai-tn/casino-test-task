@@ -55,7 +55,7 @@ const getJackpotByGame = (game) => {
     class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-2 gap-y-5"
   >
     <div v-for="game in games" :key="game.id">
-      <div class="relative game">
+      <div class="relative game cursor-pointer">
         <p
           v-show="props.gameTab === 'jackpots'"
           class="absolute right-0 bg-white m-[9px] p-[7px] text-red-600 font-bold"
