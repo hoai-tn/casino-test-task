@@ -7,11 +7,9 @@ const props = defineProps({
     required: true,
   },
 });
-let timeoutJackpot = null;
 
 const games = computed(() => {
   //Update the current jackpot for appropriate games every few seconds
-  fetchJackpotsFewSeconds();
   // Define an array of categories to be used later
   const categoriesOther = ["ball", "fun", "virtual"];
   // Return a filtered list of games based on 'props.gameTab'
@@ -32,22 +30,18 @@ const games = computed(() => {
   });
 });
 
+// Set a timeout to fetch jackpots feed after 3 seconds
+const fetchJackpotsFewSeconds = () => {
+  setInterval(() => {
+    store.fetchJackpotsFeed();
+  }, 3000);
+};
+fetchJackpotsFewSeconds();
+
 const isNewCategory = (game) => {
   return game.categories.includes("new");
 };
 
-const fetchJackpotsFewSeconds = () => {
-  // Check if 'props.gameTab' is 'jackpots'
-  if (props.gameTab === "jackpots") {
-    // Set a timeout to fetch jackpots feed after 3 seconds
-    timeoutJackpot = setTimeout(() => {
-      store.fetchJackpotsFeed();
-    }, 3000);
-  } else {
-    // If 'props.gameTab' is not 'jackpots', clear the timeout
-    timeoutJackpot = null;
-  }
-};
 const getJackpotByGame = (game) => {
   const amount = store.jackpots.find(
     (jackpot) => jackpot.game === game
