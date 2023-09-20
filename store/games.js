@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import axios from "axios";
+import { getGamesFeed, getJackpots } from "~/apis/game";
 export const useGameStore = defineStore("game", {
   state: () => ({
     games: [],
@@ -7,16 +7,20 @@ export const useGameStore = defineStore("game", {
   }),
   actions: {
     async fetchGamesFeed() {
-      const { data } = await axios.get(
-        "https://stage.whgstage.com/front-end-test/games.php"
-      );
-      this.games = data;
+      try {
+        const games = await getGamesFeed();
+        this.games = games;
+      } catch (error) {
+        console.log(error);
+      }
     },
     async fetchJackpotsFeed() {
-      const { data } = await axios.get(
-        "https://stage.whgstage.com/front-end-test/jackpots.php"
-      );
-      this.jackpots = data;
+      try {
+        const jackpots = await getJackpots();
+        this.jackpots = jackpots;
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 });
